@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "motion/react";
+import { usePhoneContainer } from "../App";
 import {
   ArrowDown,
   CheckCircle2,
@@ -329,7 +331,7 @@ function StateCard({ appState }: { appState: string }) {
 
   return (
     <div 
-      className="flex flex-col bg-gradient-to-b from-[rgba(255,255,255,0.06)] to-[rgba(255,255,255,0.02)] rounded-[16px] p-[24px] backdrop-blur-2xl shadow-[inset_0_1px_0_rgba(255,255,255,0.1),0_16px_40px_rgba(0,0,0,0.4)] cursor-pointer w-full"
+      className="flex flex-col bg-gradient-to-b from-[rgba(255,255,255,0.1)] to-[rgba(255,255,255,0.2)] rounded-[16px] p-[24px] backdrop-blur-xl cursor-pointer w-full"
       onClick={() => setExpanded(!expanded)}
     >
       <div className="flex items-start justify-between w-full">
@@ -479,8 +481,8 @@ function CausalChain() {
             </div>
           </div>
         </div>
-        <p className="italic text-[rgba(175,210,224,0.5)] mt-[16px] pl-[56px] text-[#ffffffbf] text-[14px]">
-          Amplified by: Low Ferritin (last tested Jan 2025)
+        <p className="text-[12px] italic text-[rgba(175,210,224,0.5)] mt-[16px] pl-[56px]">
+          Amplified by: Low Ferritin (last tested Sep 2024)
         </p>
       </div>
     </div>
@@ -489,7 +491,7 @@ function CausalChain() {
 
 function InterpretationDecision() {
   return (
-    <div className="bg-gradient-to-b from-[rgba(255,255,255,0.06)] to-[rgba(255,255,255,0.02)] rounded-[16px] p-[24px] backdrop-blur-2xl shadow-[inset_0_1px_0_rgba(255,255,255,0.1),0_16px_40px_rgba(0,0,0,0.4)] w-full flex flex-col gap-[24px]">
+    <div className="bg-gradient-to-b from-[rgba(255,255,255,0.1)] to-[rgba(255,255,255,0.2)] rounded-[16px] p-[24px] backdrop-blur-xl w-full flex flex-col gap-[24px]">
       <div className="flex flex-col gap-[16px]">
         <p className="text-[24px] font-medium italic text-[#F2EDE5] leading-snug">
           "Your body is shifting energy from <span className="text-[#FE7A2E]">performance</span> to <span className="text-[#FE7A2E]">regulation</span>."
@@ -524,7 +526,7 @@ function NowAction({ onComplete }: { onComplete: () => void }) {
       </div>
 
       {isDone ? (
-        <div className="bg-gradient-to-b from-[rgba(42,103,127,0.15)] to-[rgba(42,103,127,0.02)] rounded-[16px] p-[24px] flex items-center gap-[16px] backdrop-blur-2xl shadow-[inset_0_1px_0_rgba(255,255,255,0.1),0_16px_40px_rgba(0,0,0,0.4)]">
+        <div className="bg-gradient-to-b from-[rgba(42,103,127,0.2)] to-[rgba(42,103,127,0.1)] rounded-[16px] p-[24px] flex items-center gap-[16px] backdrop-blur-xl">
           <div className="w-[48px] h-[48px] rounded-full bg-white/20 flex items-center justify-center shrink-0">
              <CheckCircle2 className="w-[24px] h-[24px] text-white" />
           </div>
@@ -534,7 +536,7 @@ function NowAction({ onComplete }: { onComplete: () => void }) {
           </div>
         </div>
       ) : (
-        <div className="bg-gradient-to-b from-[rgba(42,103,127,0.2)] to-[rgba(42,103,127,0.05)] rounded-[16px] p-[24px] backdrop-blur-2xl shadow-[inset_0_1px_0_rgba(255,255,255,0.1),0_16px_40px_rgba(0,0,0,0.4)] flex flex-col gap-[24px]">
+        <div className="bg-gradient-to-b from-[rgba(42,103,127,0.25)] to-[rgba(42,103,127,0.1)] rounded-[16px] p-[24px] backdrop-blur-xl flex flex-col gap-[24px]">
           <div className="flex flex-col gap-[12px]">
             <div className="flex flex-col gap-[8px]">
               <p className="text-[14px] font-bold text-[#FE7A2E] uppercase tracking-[1.2px]">
@@ -663,7 +665,7 @@ function EveningItem({ title, context, isCompleted, onToggle, expandContent }: a
 
 function ExperimentCard({ onClick }: any) {
   return (
-    <div className="bg-gradient-to-b from-[rgba(255,255,255,0.06)] to-[rgba(255,255,255,0.02)] rounded-[16px] p-[24px] cursor-pointer backdrop-blur-2xl shadow-[inset_0_1px_0_rgba(255,255,255,0.1),0_16px_40px_rgba(0,0,0,0.4)] w-full flex flex-col gap-[24px]" onClick={onClick}>
+    <div className="bg-gradient-to-b from-[rgba(255,255,255,0.1)] to-[rgba(255,255,255,0.2)] rounded-[16px] p-[24px] cursor-pointer backdrop-blur-xl w-full flex flex-col gap-[24px]" onClick={onClick}>
       <div className="flex flex-col gap-[12px]">
         <div className="flex flex-col gap-[8px]">
           <p className="text-[14px] font-bold text-[#FE7A2E] uppercase tracking-[1.2px]">
@@ -699,7 +701,7 @@ function LookingAhead() {
 
   return (
     <>
-      <div className="bg-gradient-to-b from-[rgba(255,255,255,0.06)] to-[rgba(255,255,255,0.02)] rounded-[16px] p-[24px] backdrop-blur-2xl shadow-[inset_0_1px_0_rgba(255,255,255,0.1),0_16px_40px_rgba(0,0,0,0.4)] w-full flex flex-col gap-[12px]">
+      <div className="bg-gradient-to-b from-[rgba(255,255,255,0.1)] to-[rgba(255,255,255,0.2)] rounded-[16px] p-[24px] backdrop-blur-xl w-full flex flex-col gap-[12px]">
         <p className="text-[14px] font-normal italic text-[rgba(255,255,255,0.75)]">
           What Somatiq sees coming.
         </p>
@@ -782,18 +784,12 @@ function LookingAhead() {
   );
 }
 
-// Reusable Bottom Sheet Component
+// Reusable Bottom Sheet Component — portaled into the phone container for native feel
 function BottomSheet({ isOpen, onClose, title, children }: { isOpen: boolean; onClose: () => void; title?: string; children: React.ReactNode }) {
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
-    return () => { document.body.style.overflow = ""; };
-  }, [isOpen]);
+  const phoneRef = usePhoneContainer();
+  const container = phoneRef.current;
 
-  return (
+  const sheet = (
     <AnimatePresence>
       {isOpen && (
         <>
@@ -802,27 +798,27 @@ function BottomSheet({ isOpen, onClose, title, children }: { isOpen: boolean; on
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="fixed inset-0 z-50 bg-[#0E1E26]/60 backdrop-blur-sm"
+            className="absolute inset-0 z-50 bg-black/60 backdrop-blur-sm"
           />
           <motion.div
             initial={{ y: "100%" }}
             animate={{ y: 0 }}
             exit={{ y: "100%" }}
-            transition={{ type: "spring", damping: 28, stiffness: 220 }}
+            transition={{ type: "spring", damping: 30, stiffness: 300 }}
             drag="y"
             dragConstraints={{ top: 0 }}
-            dragElastic={0.15}
-            onDragEnd={(e, info) => {
+            dragElastic={0.1}
+            onDragEnd={(_e, info) => {
               if (info.offset.y > 80 || info.velocity.y > 400) {
                 onClose();
               }
             }}
-            className="fixed bottom-0 left-0 right-0 z-50 bg-[#142934] rounded-t-[20px] max-h-[90vh] overflow-y-auto"
+            className="absolute bottom-0 left-0 right-0 z-50 bg-[#142934] rounded-t-[24px] max-h-[85%] flex flex-col"
           >
-            <div className="w-full flex justify-center py-[12px] sticky top-0 bg-[#142934] z-10">
-              <div className="w-[40px] h-[4px] rounded-full bg-[rgba(255,255,255,0.2)]" />
+            <div className="w-full flex justify-center py-[12px] shrink-0 cursor-grab active:cursor-grabbing">
+              <div className="w-[36px] h-[4px] rounded-full bg-[rgba(255,255,255,0.3)]" />
             </div>
-            <div className="px-[24px] pb-[120px] pt-[4px]">
+            <div className="px-[24px] pb-[40px] pt-[4px] overflow-y-auto flex-1">
               {title && (
                 <h3 className="text-[20px] font-semibold text-white mb-[20px]">{title}</h3>
               )}
@@ -833,4 +829,10 @@ function BottomSheet({ isOpen, onClose, title, children }: { isOpen: boolean; on
       )}
     </AnimatePresence>
   );
+
+  // Portal into the phone container so the sheet is positioned relative to the device frame
+  if (container) {
+    return createPortal(sheet, container);
+  }
+  return sheet;
 }

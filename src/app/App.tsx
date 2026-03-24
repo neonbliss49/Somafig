@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, createContext, useContext } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import {
   X,
@@ -29,7 +29,7 @@ import {
   MessageCircle,
   Send
 } from "lucide-react";
-import bgImage from 'figma:asset/c3a9e0d26438d10a4790c66aac563e15393ba22b.png';
+import bgImage from '../assets/bg-flowers.jpg';
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { TodayScreenNew } from "./components/TodayScreenNew";
@@ -38,10 +38,15 @@ function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+// Context for portaling overlays (bottom sheets) into the phone container
+export const PhoneContainerContext = createContext<React.RefObject<HTMLDivElement | null>>({ current: null });
+export const usePhoneContainer = () => useContext(PhoneContainerContext);
+
 // -----------------------------------------------------------------------------
 // MAIN APP COMPONENT
 // -----------------------------------------------------------------------------
 export default function App() {
+  const phoneRef = useRef<HTMLDivElement>(null);
   // Start in "insight" flow as the primary morning entry experience
   const [view, setView] = useState<"insight" | "summary" | "explore">("insight");
   const [step, setStep] = useState<1 | 2 | 3 | 4 | 5>(1);
@@ -99,7 +104,8 @@ export default function App() {
       style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
     >
       {/* Mobile Device Container */}
-      <motion.div 
+      <motion.div
+        ref={phoneRef}
         animate={{
           backgroundColor: "#122F3A",
           color: "#f2f0e5"
@@ -107,15 +113,15 @@ export default function App() {
         transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
         className="w-full sm:w-[390px] h-full sm:h-[844px] sm:max-h-[100dvh] sm:rounded-[40px] shadow-2xl overflow-hidden relative flex flex-col items-center z-10"
       >
+      <PhoneContainerContext.Provider value={phoneRef}>
         {/* Global Background */}
-        <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden bg-[#0A1A21]">
+        <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden bg-[#142934]">
           <img
             src={bgImage}
             alt=""
-            className="absolute inset-0 max-w-none object-cover size-full opacity-50"
+            className="absolute inset-0 max-w-none object-cover size-full opacity-30"
           />
-          <div className="absolute inset-0 mix-blend-overlay" style={{ backgroundImage: "linear-gradient(179.98deg, rgb(10, 26, 33) 13.908%, rgba(10, 26, 33, 0.15) 56.95%, rgb(10, 26, 33) 99.991%)" }} />
-          <div className="absolute inset-0 bg-[rgba(0,0,0,0.05)]" />
+          <div className="absolute inset-0 mix-blend-multiply" style={{ backgroundImage: "linear-gradient(180deg, rgba(10,26,33,0.5) 14%, rgba(10,26,33,0.15) 57%, rgba(10,26,33,0.5) 100%)" }} />
         </div>
 
         <AnimatePresence mode="wait">
@@ -314,12 +320,13 @@ export default function App() {
 
         {/* Minimal Bottom Indication (Fake Home Indicator) - Only show in non-insight views or hide entirely for full screen immersion */}
         {!isInsight && (
-          <motion.div 
+          <motion.div
             animate={{ backgroundColor: "#cad5e2" }}
             transition={{ duration: 0.6 }}
-            className="absolute bottom-2 left-1/2 -translate-x-1/2 w-[120px] h-[5px] rounded-full z-50 pointer-events-none" 
+            className="absolute bottom-2 left-1/2 -translate-x-1/2 w-[120px] h-[5px] rounded-full z-50 pointer-events-none"
           />
         )}
+      </PhoneContainerContext.Provider>
       </motion.div>
     </div>
   );
