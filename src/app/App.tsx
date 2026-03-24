@@ -112,10 +112,10 @@ export default function App() {
           <img
             src={bgImage}
             alt=""
-            className="absolute inset-0 max-w-none object-cover size-full opacity-30"
+            className="absolute inset-0 max-w-none object-cover size-full opacity-50"
           />
-          <div className="absolute inset-0 mix-blend-overlay" style={{ backgroundImage: "linear-gradient(179.98deg, rgb(10, 26, 33) 13.908%, rgba(10, 26, 33, 0.3) 56.95%, rgb(10, 26, 33) 99.991%)" }} />
-          <div className="absolute inset-0 bg-[rgba(0,0,0,0.15)]" />
+          <div className="absolute inset-0 mix-blend-overlay" style={{ backgroundImage: "linear-gradient(179.98deg, rgb(10, 26, 33) 13.908%, rgba(10, 26, 33, 0.15) 56.95%, rgb(10, 26, 33) 99.991%)" }} />
+          <div className="absolute inset-0 bg-[rgba(0,0,0,0.05)]" />
         </div>
 
         <AnimatePresence mode="wait">
@@ -1266,7 +1266,7 @@ function BottomNav({ activeTab, onTabChange }: { activeTab: string, onTabChange:
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.3, duration: 0.5 }}
-      className="absolute bottom-0 left-0 w-full bg-[rgba(29,41,61,0.8)] backdrop-blur-xl border-t border-[rgba(255,255,255,0.1)] pb-6 pt-2 px-6 flex justify-between items-center z-40"
+      className="absolute bottom-0 left-0 w-full bg-[rgba(29,41,61,0.8)] backdrop-blur-xl border-t border-[rgba(255,255,255,0.1)] pb-6 pt-2 px-6 flex justify-between items-center z-40 bg-[#142934]"
     >
       <NavItem 
         icon={<Home />} 

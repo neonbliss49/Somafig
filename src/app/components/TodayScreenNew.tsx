@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import {
   ArrowDown,
@@ -12,7 +12,8 @@ import {
   Droplets,
   Moon,
   Clock,
-  Eye
+  Eye,
+  X
 } from "lucide-react";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
@@ -99,7 +100,7 @@ export function TodayScreenNew({
                 <div className="flex flex-col gap-[16px]">
                   <div>
                     <p className="text-[12px] font-bold text-[rgba(255,255,255,0.5)] uppercase tracking-[1px] mb-[4px]">Why today</p>
-                    <p className="text-[14px] text-[rgba(255,255,255,0.85)] leading-[1.5]">Your current hormonal phase makes your energy more sensitive to blood sugar changes. Your last Ferritin was low (January 2026) — iron-rich meals are especially important right now.</p>
+                    <p className="text-[14px] text-[rgba(255,255,255,0.85)] leading-[1.5]">Your current hormonal phase makes your energy more sensitive to blood sugar changes. Your last Ferritin was low (January 2025) — iron-rich meals are especially important right now.</p>
                   </div>
                   <div>
                     <p className="text-[12px] font-bold text-[rgba(255,255,255,0.5)] uppercase tracking-[1px] mb-[4px]">How to do it</p>
@@ -172,7 +173,7 @@ export function TodayScreenNew({
             <p className="text-[14px] font-normal italic text-[rgba(255,255,255,0.75)]">
               Tonight is about recovery support.
             </p>
-            <h2 className="text-[20px] font-semibold text-white">Tonight’s focus</h2>
+            <h2 className="text-[20px] font-semibold text-white">Evening</h2>
           </div>
           <div className="flex flex-col">
             <EveningItem 
@@ -213,8 +214,6 @@ export function TodayScreenNew({
             />
           </div>
         </div>
-        
-        <ValidatingMoment />
 
         {/* 9. ACTIVE EXPERIMENT */}
         <ExperimentCard onClick={() => {
@@ -237,114 +236,81 @@ export function TodayScreenNew({
       </div>
 
       {/* EXPERIMENT BOTTOM SHEET */}
-      <AnimatePresence>
-        {showExperimentSheet && (
-          <>
-            <motion.div 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setShowExperimentSheet(false)}
-              className="fixed inset-0 z-50 bg-[#0E1E26]/50 backdrop-blur-sm"
-            />
-            <motion.div 
-              initial={{ y: "100%" }}
-              animate={{ y: 0 }}
-              exit={{ y: "100%" }}
-              transition={{ type: "spring", damping: 25, stiffness: 200 }}
-              drag="y"
-              dragConstraints={{ top: 0 }}
-              dragElastic={0.2}
-              onDragEnd={(e, info) => {
-                if (info.offset.y > 100 || info.velocity.y > 500) {
-                  setShowExperimentSheet(false);
-                }
-              }}
-              className="fixed bottom-0 left-0 right-0 z-50 bg-[#142934] rounded-t-[20px] max-h-[85vh] overflow-y-auto"
-            >
-              <div className="w-full flex justify-center py-[12px] sticky top-0 bg-[#142934] z-10">
-                <div className="w-[40px] h-[4px] rounded-full bg-[rgba(255,255,255,0.2)]" />
+      <BottomSheet isOpen={showExperimentSheet} onClose={() => setShowExperimentSheet(false)} title="Active Experiment · Day 4 of 7">
+        <div className="px-[24px] pb-[120px] pt-[4px]">
+          <h2 className="text-[24px] font-medium text-white mb-[20px]">
+            Magnesium before sleep
+          </h2>
+          
+          <div className="bg-[rgba(255,255,255,0.08)] rounded-[14px] p-[16px] mb-[24px]">
+            <p className="text-[14px] text-[rgba(255,255,255,0.85)] leading-[1.4]">
+              "If you take Magnesium before sleep, your deep sleep should improve."
+            </p>
+          </div>
+
+          <div className="flex flex-col gap-[16px] mb-[32px]">
+            <div>
+              <p className="text-[12px] font-bold text-[rgba(255,255,255,0.5)] uppercase tracking-[1px] mb-[4px]">What to do:</p>
+              <p className="text-[14px] text-[rgba(255,255,255,0.75)]">Take 400mg Magnesium Glycinate 30–60 min before bed</p>
+            </div>
+            <div>
+              <p className="text-[12px] font-bold text-[rgba(255,255,255,0.5)] uppercase tracking-[1px] mb-[4px]">What Somatiq tracks:</p>
+              <p className="text-[14px] text-[rgba(255,255,255,0.75)]">Deep sleep duration, sleep onset time, HRV</p>
+            </div>
+          </div>
+
+          <div className="flex justify-between mb-[32px]">
+            {[
+              { day: 'Mon', val: '1h 38m', filled: true },
+              { day: 'Tue', val: '1h 22m', filled: true },
+              { day: 'Wed', val: '1h 41m', filled: true },
+              { day: 'Thu', val: '1h 35m', filled: true },
+              { day: 'Fri', val: '', filled: false },
+              { day: 'Sat', val: '', filled: false },
+              { day: 'Sun', val: '', filled: false }
+            ].map((d, i) => (
+              <div key={i} className="flex flex-col items-center gap-[8px]">
+                <div className={cn(
+                  "w-[32px] h-[32px] rounded-full flex items-center justify-center text-[12px] font-medium",
+                  d.filled ? "bg-white text-[#0E1E26]" : "border border-[rgba(255,255,255,0.2)] text-[rgba(255,255,255,0.5)]"
+                )}>
+                  {d.day[0]}
+                </div>
+                <p className="text-[10px] text-[rgba(255,255,255,0.5)] h-[14px]">{d.val}</p>
               </div>
-              <div className="px-[24px] pb-[40px] pt-[8px]">
-                <p className="text-[12px] font-bold text-[#FE7A2E] uppercase tracking-[1px] mb-[6px]">
-                  Active Experiment · Day 4 of 7
-                </p>
-                <h2 className="text-[24px] font-medium text-white mb-[20px]">
-                  Magnesium before sleep
-                </h2>
-                
-                <div className="bg-[rgba(255,255,255,0.08)] rounded-[14px] p-[16px] mb-[24px]">
-                  <p className="text-[14px] text-[rgba(255,255,255,0.85)] leading-[1.4]">
-                    "If you take Magnesium before sleep, your deep sleep should improve."
-                  </p>
-                </div>
+            ))}
+          </div>
 
-                <div className="flex flex-col gap-[16px] mb-[32px]">
-                  <div>
-                    <p className="text-[12px] font-bold text-[rgba(255,255,255,0.5)] uppercase tracking-[1px] mb-[4px]">What to do:</p>
-                    <p className="text-[14px] text-[rgba(255,255,255,0.75)]">Take 400mg Magnesium Glycinate 30–60 min before bed</p>
-                  </div>
-                  <div>
-                    <p className="text-[12px] font-bold text-[rgba(255,255,255,0.5)] uppercase tracking-[1px] mb-[4px]">What Somatiq tracks:</p>
-                    <p className="text-[14px] text-[rgba(255,255,255,0.75)]">Deep sleep duration, sleep onset time, HRV</p>
-                  </div>
+          <div className="mb-[32px]">
+            <div className="flex justify-between items-start mb-[16px]">
+              <div className="flex flex-col gap-[12px]">
+                <div>
+                  <p className="text-[12px] text-[rgba(255,255,255,0.5)] mb-[2px]">Before experiment (7-day avg):</p>
+                  <p className="text-[16px] text-white">Deep Sleep 1h 12m</p>
                 </div>
-
-                <div className="flex justify-between mb-[32px]">
-                  {[
-                    { day: 'Mon', val: '1h 38m', filled: true },
-                    { day: 'Tue', val: '1h 22m', filled: true },
-                    { day: 'Wed', val: '1h 41m', filled: true },
-                    { day: 'Thu', val: '1h 35m', filled: true },
-                    { day: 'Fri', val: '', filled: false },
-                    { day: 'Sat', val: '', filled: false },
-                    { day: 'Sun', val: '', filled: false }
-                  ].map((d, i) => (
-                    <div key={i} className="flex flex-col items-center gap-[8px]">
-                      <div className={cn(
-                        "w-[32px] h-[32px] rounded-full flex items-center justify-center text-[12px] font-medium",
-                        d.filled ? "bg-white text-[#0E1E26]" : "border border-[rgba(255,255,255,0.2)] text-[rgba(255,255,255,0.5)]"
-                      )}>
-                        {d.day[0]}
-                      </div>
-                      <p className="text-[10px] text-[rgba(255,255,255,0.5)] h-[14px]">{d.val}</p>
-                    </div>
-                  ))}
+                <div>
+                  <p className="text-[12px] text-[rgba(255,255,255,0.5)] mb-[2px]">During experiment (so far):</p>
+                  <p className="text-[16px] text-white">Deep Sleep 1h 34m</p>
                 </div>
-
-                <div className="mb-[32px]">
-                  <div className="flex justify-between items-start mb-[16px]">
-                    <div className="flex flex-col gap-[12px]">
-                      <div>
-                        <p className="text-[12px] text-[rgba(255,255,255,0.5)] mb-[2px]">Before experiment (7-day avg):</p>
-                        <p className="text-[16px] text-white">Deep Sleep 1h 12m</p>
-                      </div>
-                      <div>
-                        <p className="text-[12px] text-[rgba(255,255,255,0.5)] mb-[2px]">During experiment (so far):</p>
-                        <p className="text-[16px] text-white">Deep Sleep 1h 34m</p>
-                      </div>
-                    </div>
-                    <p className="text-[14px] font-semibold text-[#FE7A2E] mt-[44px]">+22 min (+31%)</p>
-                  </div>
-                  
-                  <div className="w-full h-[80px] relative border-b border-[rgba(255,255,255,0.1)]">
-                    <svg className="w-full h-full" preserveAspectRatio="none" viewBox="0 0 100 100">
-                      <path d="M0 60 L100 60" stroke="rgba(255,255,255,0.2)" strokeWidth="1" strokeDasharray="4 4" fill="none" />
-                      <path d="M0 70 Q 15 55, 30 65 T 55 50" stroke="rgba(255,255,255,0.2)" strokeWidth="1.5" fill="none" />
-                      <path d="M55 50 Q 70 30, 85 45 T 100 20" stroke="#FE7A2E" strokeWidth="1.5" fill="none" />
-                      <line x1="55" y1="0" x2="55" y2="100" stroke="rgba(255,255,255,0.3)" strokeWidth="1" strokeDasharray="2 2" />
-                    </svg>
-                  </div>
-                </div>
-
-                <button className="w-full py-[12px] text-[14px] font-medium text-[rgba(255,255,255,0.5)] hover:text-white transition-colors text-center" onClick={() => alert("Cancel confirmation dialog would appear here.")}>
-                  Cancel Experiment
-                </button>
               </div>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
+              <p className="text-[14px] font-semibold text-[#FE7A2E] mt-[44px]">+22 min (+31%)</p>
+            </div>
+            
+            <div className="w-full h-[80px] relative border-b border-[rgba(255,255,255,0.1)]">
+              <svg className="w-full h-full" preserveAspectRatio="none" viewBox="0 0 100 100">
+                <path d="M0 60 L100 60" stroke="rgba(255,255,255,0.2)" strokeWidth="1" strokeDasharray="4 4" fill="none" />
+                <path d="M0 70 Q 15 55, 30 65 T 55 50" stroke="rgba(255,255,255,0.2)" strokeWidth="1.5" fill="none" />
+                <path d="M55 50 Q 70 30, 85 45 T 100 20" stroke="#FE7A2E" strokeWidth="1.5" fill="none" />
+                <line x1="55" y1="0" x2="55" y2="100" stroke="rgba(255,255,255,0.3)" strokeWidth="1" strokeDasharray="2 2" />
+              </svg>
+            </div>
+          </div>
+
+          <button className="w-full py-[12px] text-[14px] font-medium text-[rgba(255,255,255,0.5)] hover:text-white transition-colors text-center" onClick={() => alert("Cancel confirmation dialog would appear here.")}>
+            Cancel Experiment
+          </button>
+        </div>
+      </BottomSheet>
     </motion.div>
   );
 }
@@ -363,7 +329,7 @@ function StateCard({ appState }: { appState: string }) {
 
   return (
     <div 
-      className="flex flex-col bg-gradient-to-b from-[rgba(255,255,255,0.08)] to-[rgba(255,255,255,0.15)] rounded-[16px] p-[24px] backdrop-blur-2xl border border-[rgba(255,255,255,0.12)] shadow-[0_8px_32px_rgba(0,0,0,0.2)] cursor-pointer w-full"
+      className="flex flex-col bg-gradient-to-b from-[rgba(255,255,255,0.06)] to-[rgba(255,255,255,0.02)] rounded-[16px] p-[24px] backdrop-blur-2xl shadow-[inset_0_1px_0_rgba(255,255,255,0.1),0_16px_40px_rgba(0,0,0,0.4)] cursor-pointer w-full"
       onClick={() => setExpanded(!expanded)}
     >
       <div className="flex items-start justify-between w-full">
@@ -513,6 +479,9 @@ function CausalChain() {
             </div>
           </div>
         </div>
+        <p className="italic text-[rgba(175,210,224,0.5)] mt-[16px] pl-[56px] text-[#ffffffbf] text-[14px]">
+          Amplified by: Low Ferritin (last tested Jan 2025)
+        </p>
       </div>
     </div>
   );
@@ -520,7 +489,7 @@ function CausalChain() {
 
 function InterpretationDecision() {
   return (
-    <div className="bg-gradient-to-b from-[rgba(255,255,255,0.08)] to-[rgba(255,255,255,0.15)] rounded-[16px] p-[24px] backdrop-blur-2xl border border-[rgba(255,255,255,0.12)] shadow-[0_8px_32px_rgba(0,0,0,0.2)] w-full flex flex-col gap-[24px]">
+    <div className="bg-gradient-to-b from-[rgba(255,255,255,0.06)] to-[rgba(255,255,255,0.02)] rounded-[16px] p-[24px] backdrop-blur-2xl shadow-[inset_0_1px_0_rgba(255,255,255,0.1),0_16px_40px_rgba(0,0,0,0.4)] w-full flex flex-col gap-[24px]">
       <div className="flex flex-col gap-[16px]">
         <p className="text-[24px] font-medium italic text-[#F2EDE5] leading-snug">
           "Your body is shifting energy from <span className="text-[#FE7A2E]">performance</span> to <span className="text-[#FE7A2E]">regulation</span>."
@@ -555,7 +524,7 @@ function NowAction({ onComplete }: { onComplete: () => void }) {
       </div>
 
       {isDone ? (
-        <div className="bg-gradient-to-b from-[rgba(92,55,25,0.5)] to-[rgba(254,122,46,0.5)] rounded-[16px] p-[24px] flex items-center gap-[16px] backdrop-blur-2xl border border-[rgba(255,255,255,0.12)] shadow-[0_8px_32px_rgba(0,0,0,0.2)]">
+        <div className="bg-gradient-to-b from-[rgba(42,103,127,0.15)] to-[rgba(42,103,127,0.02)] rounded-[16px] p-[24px] flex items-center gap-[16px] backdrop-blur-2xl shadow-[inset_0_1px_0_rgba(255,255,255,0.1),0_16px_40px_rgba(0,0,0,0.4)]">
           <div className="w-[48px] h-[48px] rounded-full bg-white/20 flex items-center justify-center shrink-0">
              <CheckCircle2 className="w-[24px] h-[24px] text-white" />
           </div>
@@ -565,7 +534,7 @@ function NowAction({ onComplete }: { onComplete: () => void }) {
           </div>
         </div>
       ) : (
-        <div className="bg-gradient-to-b from-[rgba(92,55,25,0.5)] to-[rgba(254,122,46,0.5)] rounded-[16px] p-[24px] backdrop-blur-2xl border border-[rgba(255,255,255,0.12)] shadow-[0_8px_32px_rgba(0,0,0,0.2)] flex flex-col gap-[24px]">
+        <div className="bg-gradient-to-b from-[rgba(42,103,127,0.2)] to-[rgba(42,103,127,0.05)] rounded-[16px] p-[24px] backdrop-blur-2xl shadow-[inset_0_1px_0_rgba(255,255,255,0.1),0_16px_40px_rgba(0,0,0,0.4)] flex flex-col gap-[24px]">
           <div className="flex flex-col gap-[12px]">
             <div className="flex flex-col gap-[8px]">
               <p className="text-[14px] font-bold text-[#FE7A2E] uppercase tracking-[1.2px]">
@@ -614,104 +583,87 @@ function DiscoveryCard() {
 }
 
 function ThroughTheDayItem({ title, subtitle, timeLabel, isCompleted, onToggle, expandContent }: any) {
-  const [expanded, setExpanded] = useState(false);
+  const [sheetOpen, setSheetOpen] = useState(false);
 
   return (
-    <div className="w-full py-[12px] cursor-pointer" onClick={() => setExpanded(!expanded)}>
-      <div className="flex items-start gap-[16px]">
-        <button 
-          onClick={(e) => { e.stopPropagation(); onToggle(); }}
-          className={cn(
-            "relative rounded-full shrink-0 w-[24px] h-[24px] flex items-center justify-center transition-colors border-[1.5px]",
-            isCompleted ? "bg-white border-white" : "bg-transparent border-[rgba(255,255,255,0.75)]"
-          )}
-        >
-          {isCompleted && <Check className="w-[14px] h-[14px] text-[#0E1E26]" strokeWidth={3} />}
-        </button>
-        <div className="flex-1 flex flex-col gap-[8px]">
-          <div className="flex justify-between items-start gap-2">
-            <p className={cn("text-[16px] font-medium", isCompleted ? "text-[rgba(255,255,255,0.4)] line-through" : "text-white")}>
-              {title}
-            </p>
+    <>
+      <div className="w-full py-[12px] cursor-pointer" onClick={() => !isCompleted && setSheetOpen(true)}>
+        <div className="flex items-start gap-[16px]">
+          <button 
+            onClick={(e) => { e.stopPropagation(); onToggle(); }}
+            className={cn(
+              "relative rounded-full shrink-0 w-[24px] h-[24px] flex items-center justify-center transition-colors border-[1.5px]",
+              isCompleted ? "bg-white border-white" : "bg-transparent border-[rgba(255,255,255,0.75)]"
+            )}
+          >
+            {isCompleted && <Check className="w-[14px] h-[14px] text-[#0E1E26]" strokeWidth={3} />}
+          </button>
+          <div className="flex-1 flex flex-col gap-[8px]">
+            <div className="flex justify-between items-start gap-2">
+              <p className={cn("text-[16px] font-medium", isCompleted ? "text-[rgba(255,255,255,0.4)] line-through" : "text-white")}>
+                {title}
+              </p>
+            </div>
+            {timeLabel && !isCompleted && (
+              <span className="text-[12px] font-bold text-[#FE7A2E] uppercase tracking-[1px]">{timeLabel}</span>
+            )}
+            {subtitle && !isCompleted && (
+              <p className="text-[14px] font-normal text-[rgba(255,255,255,0.75)] leading-[1.4]">{subtitle}</p>
+            )}
           </div>
-          {timeLabel && !isCompleted && (
-            <span className="text-[12px] font-bold text-[#FE7A2E] uppercase tracking-[1px]">{timeLabel}</span>
+          {!isCompleted && (
+            <div className="shrink-0 pt-[2px]">
+              <ArrowRight className="w-[16px] h-[16px] text-white/40" strokeWidth={1.5} />
+            </div>
           )}
-          {subtitle && !isCompleted && (
-            <p className="text-[14px] font-normal text-[rgba(255,255,255,0.75)] leading-[1.4]">{subtitle}</p>
-          )}
-        </div>
-        <div className="shrink-0 pt-[2px]">
-          <ChevronDown className={cn("w-[18px] h-[18px] text-white/50 transition-transform", expanded && "rotate-180")} strokeWidth={1.5} />
         </div>
       </div>
-      
-      <motion.div
-        initial={false}
-        animate={{ height: expanded ? "auto" : 0, opacity: expanded ? 1 : 0 }}
-        className="overflow-hidden"
-      >
-        <div className="pt-[16px] mt-[16px] border-t border-[rgba(255,255,255,0.1)] ml-[40px]">
-          {expandContent}
-        </div>
-      </motion.div>
-    </div>
+      <BottomSheet isOpen={sheetOpen} onClose={() => setSheetOpen(false)} title={title}>
+        {expandContent}
+      </BottomSheet>
+    </>
   );
 }
 
 function EveningItem({ title, context, isCompleted, onToggle, expandContent }: any) {
-  const [expanded, setExpanded] = useState(false);
+  const [sheetOpen, setSheetOpen] = useState(false);
 
   return (
-    <div className="w-full py-[12px] cursor-pointer" onClick={() => setExpanded(!expanded)}>
-      <div className="flex items-start gap-[16px]">
-        <button 
-          onClick={(e) => { e.stopPropagation(); onToggle(); }}
-          className={cn(
-            "relative rounded-full shrink-0 w-[24px] h-[24px] flex items-center justify-center transition-colors border-[1.5px]",
-            isCompleted ? "bg-white border-white" : "bg-transparent border-[rgba(255,255,255,0.75)]"
-          )}
-        >
-          {isCompleted && <Check className="w-[14px] h-[14px] text-[#0E1E26]" strokeWidth={3} />}
-        </button>
-        <div className="flex-1 flex flex-col gap-[8px]">
-          <p className={cn("text-[16px] font-medium", isCompleted ? "text-[rgba(255,255,255,0.4)] line-through" : "text-white")}>
-            {title}
-          </p>
-          {context && !isCompleted && (
-            <p className="text-[14px] font-normal text-[rgba(255,255,255,0.75)] leading-[1.4]">{context}</p>
+    <>
+      <div className="w-full py-[12px] cursor-pointer" onClick={() => !isCompleted && setSheetOpen(true)}>
+        <div className="flex items-start gap-[16px]">
+          <button 
+            onClick={(e) => { e.stopPropagation(); onToggle(); }}
+            className={cn(
+              "relative rounded-full shrink-0 w-[24px] h-[24px] flex items-center justify-center transition-colors border-[1.5px]",
+              isCompleted ? "bg-white border-white" : "bg-transparent border-[rgba(255,255,255,0.75)]"
+            )}
+          >
+            {isCompleted && <Check className="w-[14px] h-[14px] text-[#0E1E26]" strokeWidth={3} />}
+          </button>
+          <div className="flex-1 flex flex-col gap-[8px]">
+            <p className={cn("text-[16px] font-medium", isCompleted ? "text-[rgba(255,255,255,0.4)] line-through" : "text-white")}>
+              {title}
+            </p>
+            {context && !isCompleted && (
+              <p className="text-[14px] font-normal text-[rgba(255,255,255,0.75)] leading-[1.4]">{context}</p>
+            )}
+          </div>
+          {!isCompleted && (
+            <ArrowRight className="w-[16px] h-[16px] text-white/40 shrink-0 mt-[2px]" strokeWidth={1.5} />
           )}
         </div>
-        <ChevronDown className={cn("w-[18px] h-[18px] text-white/50 shrink-0 transition-transform mt-[2px]", expanded && "rotate-180")} strokeWidth={1.5} />
       </div>
-      
-      <motion.div
-        initial={false}
-        animate={{ height: expanded ? "auto" : 0, opacity: expanded ? 1 : 0 }}
-        className="overflow-hidden"
-      >
-        <div className="pt-[16px] mt-[16px] border-t border-[rgba(255,255,255,0.1)] ml-[40px]">
-          {expandContent}
-        </div>
-      </motion.div>
-    </div>
-  );
-}
-
-function ValidatingMoment() {
-  return (
-    <div className="flex items-start gap-[12px]">
-      <Sparkles className="w-[14px] h-[14px] text-[#AFD2E0]/40 shrink-0 mt-[4px]" strokeWidth={1.5} />
-      <p className="text-[14px] font-normal italic text-white leading-[1.5]">
-        "Day 4 of this pattern. Each time you've adjusted early, recovery improved. You know your body."
-      </p>
-    </div>
+      <BottomSheet isOpen={sheetOpen} onClose={() => setSheetOpen(false)} title={title}>
+        {expandContent}
+      </BottomSheet>
+    </>
   );
 }
 
 function ExperimentCard({ onClick }: any) {
   return (
-    <div className="bg-gradient-to-b from-[rgba(255,255,255,0.08)] to-[rgba(255,255,255,0.15)] rounded-[16px] p-[24px] cursor-pointer backdrop-blur-2xl border border-[rgba(255,255,255,0.12)] shadow-[0_8px_32px_rgba(0,0,0,0.2)] w-full flex flex-col gap-[24px]" onClick={onClick}>
+    <div className="bg-gradient-to-b from-[rgba(255,255,255,0.06)] to-[rgba(255,255,255,0.02)] rounded-[16px] p-[24px] cursor-pointer backdrop-blur-2xl shadow-[inset_0_1px_0_rgba(255,255,255,0.1),0_16px_40px_rgba(0,0,0,0.4)] w-full flex flex-col gap-[24px]" onClick={onClick}>
       <div className="flex flex-col gap-[12px]">
         <div className="flex flex-col gap-[8px]">
           <p className="text-[14px] font-bold text-[#FE7A2E] uppercase tracking-[1.2px]">
@@ -732,7 +684,7 @@ function ExperimentCard({ onClick }: any) {
             key={day} 
             className={cn(
               "w-[8px] h-[8px] rounded-full",
-              day <= 4 ? "bg-[#FE7A2E]" : "bg-[rgba(255,255,255,0.3)]"
+              day <= 4 ? "bg-[rgba(242,237,229,0.6)]" : "bg-[rgba(255,255,255,0.3)]"
             )}
           />
         ))}
@@ -742,92 +694,143 @@ function ExperimentCard({ onClick }: any) {
 }
 
 function LookingAhead() {
-  const [docExpanded, setDocExpanded] = useState(false);
+  const [docSheetOpen, setDocSheetOpen] = useState(false);
   const [showToast, setShowToast] = useState(false);
 
   return (
-    <div className="bg-gradient-to-b from-[rgba(255,255,255,0.08)] to-[rgba(255,255,255,0.15)] rounded-[16px] p-[24px] backdrop-blur-2xl border border-[rgba(255,255,255,0.12)] shadow-[0_8px_32px_rgba(0,0,0,0.2)] w-full flex flex-col gap-[12px]">
-      <p className="text-[14px] font-normal italic text-[rgba(255,255,255,0.75)]">
-        What Somatiq sees coming.
-      </p>
-      <h2 className="text-[20px] font-semibold text-[#F2EDE5] mb-[12px]">
-        Looking ahead
-      </h2>
-      
-      <div className="flex flex-col">
-        {/* Row 1 */}
-        <div className="flex items-start gap-[8px] py-[16px] border-b border-[rgba(255,255,255,0.12)]">
-          <CalendarDays className="w-[18px] h-[18px] text-white shrink-0 mt-[2px]" strokeWidth={1.5} />
-          <p className="text-[14px] text-white font-normal leading-[1.4] flex-1">
-            Next few days may stay heavy. Follicular phase in ~10 days typically brings relief.
-          </p>
-        </div>
+    <>
+      <div className="bg-gradient-to-b from-[rgba(255,255,255,0.06)] to-[rgba(255,255,255,0.02)] rounded-[16px] p-[24px] backdrop-blur-2xl shadow-[inset_0_1px_0_rgba(255,255,255,0.1),0_16px_40px_rgba(0,0,0,0.4)] w-full flex flex-col gap-[12px]">
+        <p className="text-[14px] font-normal italic text-[rgba(255,255,255,0.75)]">
+          What Somatiq sees coming.
+        </p>
+        <h2 className="text-[20px] font-semibold text-[#F2EDE5] mb-[12px]">
+          Looking ahead
+        </h2>
         
-        {/* Row 2 (Doctor Prep) */}
-        <div className="py-[16px] border-b border-[rgba(255,255,255,0.12)] cursor-pointer" onClick={() => setDocExpanded(!docExpanded)}>
-          <div className="flex items-start gap-[8px] relative">
-            <Activity className="w-[18px] h-[18px] text-white shrink-0 mt-[2px]" strokeWidth={1.5} />
-            <div className="flex-1 flex flex-col gap-[3px]">
-              <p className="text-[14px] text-white font-normal leading-[1.4]">
-                Gynecologist in 12 days
-              </p>
-              <p className="text-[12px] text-[rgba(255,255,255,0.75)] font-normal">
-                Collecting: HRV trend, sleep, symptoms, cycle
-              </p>
-            </div>
-            <ArrowRight className={cn("w-[16px] h-[16px] text-white shrink-0 mt-[2px] transition-transform", docExpanded && "rotate-90")} strokeWidth={1.5} />
+        <div className="flex flex-col">
+          {/* Row 1 */}
+          <div className="flex items-start gap-[8px] py-[16px] border-b border-[rgba(255,255,255,0.12)]">
+            <CalendarDays className="w-[18px] h-[18px] text-white shrink-0 mt-[2px]" strokeWidth={1.5} />
+            <p className="text-[14px] text-white font-normal leading-[1.4] flex-1">
+              Next few days may stay heavy. Follicular phase in ~10 days typically brings relief.
+            </p>
           </div>
           
-          <motion.div
-            initial={false}
-            animate={{ height: docExpanded ? "auto" : 0, opacity: docExpanded ? 1 : 0 }}
-            className="overflow-hidden"
-          >
-            <div className="pt-[16px] mt-[16px] border-t border-[rgba(255,255,255,0.1)] ml-[26px] flex flex-col gap-[16px]">
-              <div>
-                <p className="text-[12px] font-bold text-[rgba(255,255,255,0.5)] uppercase tracking-[1px] mb-[8px]">Suggested topics to discuss:</p>
-                <ul className="text-[14px] text-[rgba(255,255,255,0.85)] flex flex-col gap-[8px]">
-                  <li className="flex items-start gap-[8px]"><div className="w-[6px] h-[6px] rounded-full bg-[#AFD2E0] mt-[6px] shrink-0" />Ferritin recheck — your last value was low (January 2026). Worth retesting to track improvement.</li>
-                  <li className="flex items-start gap-[8px]"><div className="w-[6px] h-[6px] rounded-full bg-[#AFD2E0] mt-[6px] shrink-0" />Oral progesterone 200mg — may improve deep sleep quality. Your data shows consistent sleep disruption in luteal phase.</li>
-                  <li className="flex items-start gap-[8px]"><div className="w-[6px] h-[6px] rounded-full bg-[#AFD2E0] mt-[6px] shrink-0" />Endometriosis management — your symptom patterns suggest increasing baseline load.</li>
-                </ul>
+          {/* Row 2 (Doctor Prep) */}
+          <div className="py-[16px] border-b border-[rgba(255,255,255,0.12)] cursor-pointer" onClick={() => setDocSheetOpen(true)}>
+            <div className="flex items-start gap-[8px] relative">
+              <Activity className="w-[18px] h-[18px] text-white shrink-0 mt-[2px]" strokeWidth={1.5} />
+              <div className="flex-1 flex flex-col gap-[3px]">
+                <p className="text-[14px] text-white font-normal leading-[1.4]">
+                  Gynecologist in 12 days
+                </p>
+                <p className="text-[12px] text-[rgba(255,255,255,0.75)] font-normal">
+                  Collecting: HRV trend, sleep, symptoms, cycle
+                </p>
               </div>
-              <div className="relative">
-                <button 
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setShowToast(true);
-                    setTimeout(() => setShowToast(false), 2500);
-                  }}
-                  className="w-full bg-transparent border-[1.5px] border-white text-white text-[14px] font-semibold rounded-[12px] py-[12px]"
-                >
-                  Preview export
-                </button>
-                <AnimatePresence>
-                  {showToast && (
-                    <motion.div 
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0 }}
-                      className="absolute -top-[40px] left-1/2 -translate-x-1/2 bg-white text-[#0E1E26] text-[12px] font-medium px-[16px] py-[8px] rounded-[8px] whitespace-nowrap shadow-lg"
-                    >
-                      Export preview coming soon
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
+              <ArrowRight className="w-[16px] h-[16px] text-white/40 shrink-0 mt-[2px]" strokeWidth={1.5} />
             </div>
-          </motion.div>
-        </div>
-        
-        {/* Row 3 */}
-        <div className="flex items-start gap-[8px] pt-[16px]">
-          <Eye className="w-[18px] h-[18px] text-white shrink-0 mt-[2px]" strokeWidth={1.5} />
-          <p className="text-[14px] text-white font-normal leading-[1.4] flex-1">
-            Your HRV drops more steeply in luteal phase than 3 months ago. 2 more cycles needed.
-          </p>
+          </div>
+          
+          {/* Row 3 */}
+          <div className="flex items-start gap-[8px] pt-[16px]">
+            <Eye className="w-[18px] h-[18px] text-white shrink-0 mt-[2px]" strokeWidth={1.5} />
+            <p className="text-[14px] text-white font-normal leading-[1.4] flex-1">
+              Your HRV drops more steeply in luteal phase than 3 months ago. 2 more cycles needed.
+            </p>
+          </div>
         </div>
       </div>
-    </div>
+
+      <BottomSheet isOpen={docSheetOpen} onClose={() => setDocSheetOpen(false)} title="Gynecologist in 12 days">
+        <div className="flex flex-col gap-[16px]">
+          <p className="text-[14px] text-[rgba(255,255,255,0.75)]">Collecting: HRV trend, sleep, symptoms, cycle</p>
+          <div>
+            <p className="text-[12px] font-bold text-[rgba(255,255,255,0.5)] uppercase tracking-[1px] mb-[8px]">Suggested topics to discuss:</p>
+            <ul className="text-[14px] text-[rgba(255,255,255,0.85)] flex flex-col gap-[8px]">
+              <li className="flex items-start gap-[8px]"><div className="w-[6px] h-[6px] rounded-full bg-[#AFD2E0] mt-[6px] shrink-0" />Ferritin recheck — your last value was low (January 2025). Worth retesting to track improvement.</li>
+              <li className="flex items-start gap-[8px]"><div className="w-[6px] h-[6px] rounded-full bg-[#AFD2E0] mt-[6px] shrink-0" />Oral progesterone 200mg — may improve deep sleep quality. Your data shows consistent sleep disruption in luteal phase.</li>
+              <li className="flex items-start gap-[8px]"><div className="w-[6px] h-[6px] rounded-full bg-[#AFD2E0] mt-[6px] shrink-0" />Endometriosis management — your symptom patterns suggest increasing baseline load.</li>
+            </ul>
+          </div>
+          <div className="relative">
+            <button 
+              onClick={() => {
+                setShowToast(true);
+                setTimeout(() => setShowToast(false), 2500);
+              }}
+              className="w-full bg-transparent border-[1.5px] border-white text-white text-[14px] font-semibold rounded-[12px] py-[12px]"
+            >
+              Preview export
+            </button>
+            <AnimatePresence>
+              {showToast && (
+                <motion.div 
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0 }}
+                  className="absolute -top-[40px] left-1/2 -translate-x-1/2 bg-white text-[#0E1E26] text-[12px] font-medium px-[16px] py-[8px] rounded-[8px] whitespace-nowrap shadow-lg"
+                >
+                  Export preview coming soon
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        </div>
+      </BottomSheet>
+    </>
+  );
+}
+
+// Reusable Bottom Sheet Component
+function BottomSheet({ isOpen, onClose, title, children }: { isOpen: boolean; onClose: () => void; title?: string; children: React.ReactNode }) {
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => { document.body.style.overflow = ""; };
+  }, [isOpen]);
+
+  return (
+    <AnimatePresence>
+      {isOpen && (
+        <>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={onClose}
+            className="fixed inset-0 z-50 bg-[#0E1E26]/60 backdrop-blur-sm"
+          />
+          <motion.div
+            initial={{ y: "100%" }}
+            animate={{ y: 0 }}
+            exit={{ y: "100%" }}
+            transition={{ type: "spring", damping: 28, stiffness: 220 }}
+            drag="y"
+            dragConstraints={{ top: 0 }}
+            dragElastic={0.15}
+            onDragEnd={(e, info) => {
+              if (info.offset.y > 80 || info.velocity.y > 400) {
+                onClose();
+              }
+            }}
+            className="fixed bottom-0 left-0 right-0 z-50 bg-[#142934] rounded-t-[20px] max-h-[90vh] overflow-y-auto"
+          >
+            <div className="w-full flex justify-center py-[12px] sticky top-0 bg-[#142934] z-10">
+              <div className="w-[40px] h-[4px] rounded-full bg-[rgba(255,255,255,0.2)]" />
+            </div>
+            <div className="px-[24px] pb-[120px] pt-[4px]">
+              {title && (
+                <h3 className="text-[20px] font-semibold text-white mb-[20px]">{title}</h3>
+              )}
+              {children}
+            </div>
+          </motion.div>
+        </>
+      )}
+    </AnimatePresence>
   );
 }
