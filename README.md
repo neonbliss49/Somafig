@@ -1,1 +1,11 @@
-# repo-template
+
+  # Implement Feature (Copy)
+
+  This is a code bundle for Implement Feature (Copy). The original project is available at https://www.figma.com/design/mUqsePz5Dz16QoZLcoRmjM/Implement-Feature--Copy-.
+
+  ## Running the code
+
+  Run `npm i` to install the dependencies.
+
+  Run `npm run dev` to start the development server.
+  
